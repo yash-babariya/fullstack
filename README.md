@@ -13,6 +13,7 @@ This is a fullstack web application built with a React frontend and Node.js back
 
 - Frontend: React, Vite
 - Backend: Node.js, Express
+- Database: MongoDB
 - Deployment: Vercel
 
 ## 📁 Project Structure
@@ -20,16 +21,21 @@ This is a fullstack web application built with a React frontend and Node.js back
     fullstack-project/
     ├── backend/
     │ ├── src/
-    │ │ ├── server.js
-    │ │ └── routes/
-    │ │ └── api.js
-    │ └── package.json
+    │ │ ├── server/
+    | | │ ├── config/
+    | | │ ├── controllers/
+    | | │ ├── middleware/
+    │ │ │ ├── models/
+    │ │ │ ├── routes/
+    │ │ │ ├── server.js
+    │ ├── package.json
     ├── frontend/
     │ ├── src/
+    │ │ ├── components/
+    │ │ ├── routing/
+    │ │ ├── styles/
     │ │ ├── App.jsx
     │ │ ├── main.jsx
-    │ │ └── api/
-    │ │ └── api.jsx
     │ ├── index.html
     │ ├── vite.config.js
     │ └── package.json
@@ -48,7 +54,12 @@ This is a fullstack web application built with a React frontend and Node.js back
 
 2. Install dependencies:
    ```
-   npm run install:all
+   cd backend
+   npm install
+   cd ../frontend
+   npm install
+   cd ..
+   npm install
    ```
 
 3. Set up environment variables:
@@ -88,14 +99,6 @@ This project is configured for deployment on Vercel. To deploy:
    - Build Command: `npm run vercel-build`
    - Output Directory: Leave blank
    - Install Command: `npm install`
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/your-username/fullstack-project/issues).
-
-## 📝 License
-
-This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
 
 ## 👤 Author
 

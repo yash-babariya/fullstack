@@ -1,15 +1,17 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5353/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-// Your API functions her
+const api = axios.create({
+    baseURL: API_BASE_URL,
+});
 
-export const getHello = async () => {
-    try {
-        const response = await axios.get(`${API_URL}/hello`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching hello:', error);
-        throw error;
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
     }
-};
+    return config;
+});
+
+export default api;
