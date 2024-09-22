@@ -104,3 +104,18 @@ This project is configured for deployment on Vercel. To deploy:
 
 - GitHub: [@yash-babariya](https://github.com/yash-babariya)
 - LinkedIn: [@yash-babariya](https://www.linkedin.com/in/yash-babariya-a370b52a5/)
+  
+- ![signup page](https://github.com/user-attachments/assets/afd90f43-56db-44ef-a63f-349d45a7766e)
+
+- ![login page](https://github.com/user-attachments/assets/3781f787-7409-422d-9787-6da8f9b31192)
+
+- ![home page](https://github.com/user-attachments/assets/addc1e09-24fb-432a-a13a-49856479c2c5)
+
+- ![mongoDB](https://github.com/user-attachments/assets/94dc0f4f-eea6-4f98-bdf8-eb5a575a59bf)
+
+- ![token in localstorage](https://github.com/user-attachments/assets/2e147178-9aaa-4ad1-a825-703c57f43292)
+
+
+
+
+
