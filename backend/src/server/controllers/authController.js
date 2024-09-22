@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import User from '../models/User.js';
 
-// Validation schemas
+// Validation schemas (unchanged)
 const signupSchema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
     email: Joi.string().email().required(),
@@ -41,16 +41,14 @@ export const signup = async (req, res) => {
         user = new User({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            lastTokenIat: Date.now() // Set initial lastTokenIat
         });
 
         await user.save();
 
-        const payload = { user: { id: user.id } };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
-            if (err) throw err;
-            res.json({ token });
-        });
+        const token = generateToken(user);
+        res.json({ token });
     } catch (error) {
         console.error("Signup error:", error);
         res.status(500).json({ message: 'Server error during signup' });
@@ -62,7 +60,7 @@ export const login = async (req, res) => {
         // Validate input
         const { error } = loginSchema.validate(req.body);
         if (error) {
-            return res.status(400).json({ message: error.details[0].message });
+            return res.status(400).json({ message: error.message });
         }
 
         const { email, password } = req.body;
@@ -77,13 +75,69 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
-        const payload = { user: { id: user.id } };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
-            if (err) throw err;
-            res.json({ token });
-        });
+        // Update lastTokenIat before generating new token
+        user.lastTokenIat = Date.now();
+        await user.save();
+
+        const token = generateToken(user);
+        res.json({ token });
     } catch (error) {
         console.error("Login error:", error);
         res.status(500).json({ message: 'Server error during login' });
+    }
+};
+
+// Function to generate tokens
+function generateToken(user) {
+    const payload = {
+        user: { id: user.id },
+        iat: Date.now()
+    };
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+}
+
+// Function to verify tokens
+export const verifyToken = async (token) => {
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.user.id);
+
+        if (!user || decoded.iat < user.lastTokenIat) {
+            return null;
+        }
+
+        return decoded;
+    } catch (error) {
+        return null;
+    }
+};
+
+// Function to refresh token
+export const refreshToken = async (req, res) => {
+    const { token } = req.body;
+    if (!token) {
+        return res.status(400).json({ message: 'Token is required' });
+    }
+
+    try {
+        const decoded = await verifyToken(token);
+        if (!decoded) {
+            return res.status(401).json({ message: 'Invalid or expired token' });
+        }
+
+        const user = await User.findById(decoded.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update lastTokenIat before generating new token
+        user.lastTokenIat = Date.now();
+        await user.save();
+
+        const newToken = generateToken(user);
+        res.json({ token: newToken });
+    } catch (error) {
+        console.error("Token refresh error:", error);
+        res.status(500).json({ message: 'Server error during token refresh' });
     }
 };

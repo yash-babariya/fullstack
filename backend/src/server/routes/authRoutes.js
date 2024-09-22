@@ -1,6 +1,6 @@
 import express from 'express';
-import { signup, login } from '../controllers/authController.js';
-import { tokenCheck } from '../middleware/auth.js'
+import { signup, login, refreshToken } from '../controllers/authController.js';
+import tokenCheck from '../middleware/auth.js'
 import User from '../models/User.js';
 
 const router = express.Router();
@@ -11,8 +11,8 @@ router.get('/', (req, res) => {
 
 router.post('/signup', signup);
 router.post('/login', login);
+router.post('/refresh-token', refreshToken);
 
-// Add the new route
 router.get('/user', tokenCheck, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
@@ -25,4 +25,5 @@ router.get('/user', tokenCheck, async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 export default router;

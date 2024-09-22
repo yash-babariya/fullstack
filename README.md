@@ -4,12 +4,14 @@ This is a fullstack web application built with a React frontend and Node.js back
 
 ## 🚀 Features
 
-- React frontend with Vite for fast development and optimized builds
-- Node.js backend with Express
-- Fullstack deployment configuration for Vercel
-- Concurrently run frontend and backend in development
+- React frontend with Vite for fast development and optimized production builds.
+- Node.js backend powered by Express.
 - JWT Authentication with token management in localStorage.
+- Joi validation for validating user input and API request data.
 - MongoDB for database storage.
+- Fullstack deployment configuration for Vercel.
+- Concurrently run frontend and backend servers in development.
+
 
 ## 🛠️ Technologies Used
 

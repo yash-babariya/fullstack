@@ -6,6 +6,18 @@ import '../styles/AuthForm.scss';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+// Auth utility functions (unchanged)
+const setToken = (token) => {
+  localStorage.setItem('token', token);
+};
+
+
+// API utility with interceptors
+const api = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,18 +36,17 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
-      if (validateForm()) {
-        try {
-          const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
-          localStorage.setItem('token', response.data.token);
-          toast.success('Login successful!');
-          navigate('/');
-        } catch (error) {
-          console.error('Login error:', error);
-          toast.error(error.response?.data?.message || 'Login failed. Please try again.');
-        }
+    e.preventDefault();
+    if (validateForm()) {
+      try {
+        const response = await api.post('/auth/login', { email, password });
+        setToken(response.data.token);
+        toast.success('Login successful!');
+        navigate('/');
+      } catch (error) {
+        console.error(error.message);
       }
+    }
   };
 
   return (

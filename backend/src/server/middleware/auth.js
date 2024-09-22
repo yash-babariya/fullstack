@@ -1,17 +1,25 @@
-import jwt from 'jsonwebtoken';
+import { verifyToken } from '../controllers/authController.js';
 
-export const tokenCheck = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
+const auth = async (req, res, next) => {
+    const authHeader = req.header('Authorization');
 
-    if (!token) {
-        return res.status(401).json({ error: 'No token provided, authorization denied' });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No token, authorization denied' });
     }
+
+    const token = authHeader.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = await verifyToken(token);
+        if (!decoded) {
+            return res.status(401).json({ message: 'Token is not valid' });
+        }
+
         req.user = decoded.user;
         next();
-    } catch (error) {
-        res.status(401).json(error.message);
+    } catch (err) {
+        res.status(401).json({ message: 'Token is not valid' });
     }
 };
+
+export default auth;

@@ -19,22 +19,15 @@ const Home = () => {
                 });
                 setUserData(response.data);
             } catch (error) {
-                toast.error('Please login to view this page');
+                localStorage.removeItem('token');
+                window.location.reload();
+                toast.error('Session expired. Please login again.');
                 navigate('/login');
             }
         };
 
         fetchUserData();
     }, []);
-
-    if (!userData) {
-        return (
-            <div>
-                <h1>Loading...</h1>
-                <button onClick={() => navigate('/login')}>Login</button>
-            </div>
-        );
-    }
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -46,11 +39,18 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <div className="details">
-                <h1>Welcome, {userData.username}!</h1>
-                <p>Email: {userData.email}</p>
-                <button onClick={handleLogout}>Logout</button>
-            </div>
+            {userData ? (
+                <div className="details">
+                    <h1>Welcome, {userData.username}!</h1>
+                    <p>Email: {userData.email}</p>
+                    <button onClick={handleLogout}>Logout</button>
+                </div>
+            ) : (
+                <div className="details">
+                    <h1>Loading...</h1>
+                    <button onClick={() => navigate('/login')}>Login</button>
+                </div>
+            )}
         </div>
     );
 };
