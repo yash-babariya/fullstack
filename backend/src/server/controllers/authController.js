@@ -1,14 +1,34 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Joi from 'joi';
 import User from '../models/User.js';
+
+// Validation schemas
+const signupSchema = Joi.object({
+    username: Joi.string().alphanum().min(3).max(30).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().pattern(new RegExp('^(?=.*[A-Za-z])(?=.*\\d).{8,}$')).required()
+        .messages({
+            'string.pattern.base': 'Create a strong password',
+            'string.empty': 'Password is required'
+        })
+});
+
+const loginSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+});
 
 export const signup = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: 'All fields are required' });
+        // Validate input
+        const { error } = signupSchema.validate(req.body);
+        if (error) {
+            console.log(error);
+            return res.status(400).json({ message: error.message });
         }
+
+        const { username, email, password } = req.body;
 
         let user = await User.findOne({ email });
         if (user) {
@@ -39,11 +59,13 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({ message: 'Email and password are required' });
+        // Validate input
+        const { error } = loginSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
         }
+
+        const { email, password } = req.body;
 
         let user = await User.findOne({ email });
         if (!user) {
