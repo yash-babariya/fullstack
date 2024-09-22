@@ -1,22 +1,35 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import { getHello } from './api/api';
+import './App.css';
 
 function App() {
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/api/hello')
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(error => console.error('Error:', error));
+    getHello()
+      .then(data => {
+        setMessage(data.message);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to fetch message');
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="App">
-      <h1>Fullstack App</h1>
-      <p>Message from backend: {message}</p>
+      <header className="App-header">
+        <h1>Fullstack App</h1>
+        <p>{message}</p>
+      </header>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
