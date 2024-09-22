@@ -8,6 +8,8 @@ This is a fullstack web application built with a React frontend and Node.js back
 - Node.js backend with Express
 - Fullstack deployment configuration for Vercel
 - Concurrently run frontend and backend in development
+- JWT Authentication with token management in localStorage.
+- MongoDB for database storage.
 
 ## 🛠️ Technologies Used
 
@@ -54,12 +56,17 @@ This is a fullstack web application built with a React frontend and Node.js back
 
 2. Install dependencies:
    ```
-   cd backend
-   npm install
-   cd ../frontend
-   npm install
-   cd ..
-   npm install
+    # Backend dependencies
+    cd backend
+    npm install
+    
+    # Frontend dependencies
+    cd ../frontend
+    npm install
+    
+    # Root-level dependencies
+    cd ..
+    npm install
    ```
 
 3. Set up environment variables:
@@ -105,15 +112,41 @@ This project is configured for deployment on Vercel. To deploy:
 - GitHub: [@yash-babariya](https://github.com/yash-babariya)
 - LinkedIn: [@yash-babariya](https://www.linkedin.com/in/yash-babariya-a370b52a5/)
   
-- ![signup page](https://github.com/user-attachments/assets/afd90f43-56db-44ef-a63f-349d45a7766e)
+## 🖼️ Screenshots
 
-- ![login page](https://github.com/user-attachments/assets/3781f787-7409-422d-9787-6da8f9b31192)
+### 1. Signup Page
+The signup page allows users to create an account by entering their details.
 
-- ![home page](https://github.com/user-attachments/assets/addc1e09-24fb-432a-a13a-49856479c2c5)
+![Signup Page](https://github.com/user-attachments/assets/afd90f43-56db-44ef-a63f-349d45a7766e)
 
-- ![mongoDB](https://github.com/user-attachments/assets/94dc0f4f-eea6-4f98-bdf8-eb5a575a59bf)
+---
 
-- ![token in localstorage](https://github.com/user-attachments/assets/2e147178-9aaa-4ad1-a825-703c57f43292)
+### 2. Login Page
+Users can log in with their credentials to gain access to the application.
+
+![Login Page](https://github.com/user-attachments/assets/3781f787-7409-422d-9787-6da8f9b31192)
+
+---
+
+### 3. Home Page
+Once logged in, the user is redirected to the home page, displaying personalized content.
+
+![Home Page](https://github.com/user-attachments/assets/addc1e09-24fb-432a-a13a-49856479c2c5)
+
+---
+
+### 4. MongoDB Database
+All user data is securely stored in a MongoDB database.
+
+![MongoDB](https://github.com/user-attachments/assets/94dc0f4f-eea6-4f98-bdf8-eb5a575a59bf)
+
+---
+
+### 5. Token in LocalStorage
+Tokens are stored in **localStorage** for authentication, ensuring persistent sessions across browser refreshes.
+
+![Token in LocalStorage](https://github.com/user-attachments/assets/2e147178-9aaa-4ad1-a825-703c57f43292)
+
 
 
 
