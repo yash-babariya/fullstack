@@ -5,12 +5,13 @@ function App() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL || '/api';
-    fetch(`${apiUrl}/hello`)
+    const apiUrl = import.meta.env.VITE_API_URL || '';
+    fetch(`${apiUrl}/api/hello`)
       .then(response => response.json())
       .then(data => setMessage(data.message))
       .catch(error => console.error('Error:', error));
   }, []);
+
 
   return (
     <div className="App">
