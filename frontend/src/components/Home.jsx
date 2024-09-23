@@ -34,7 +34,6 @@ const Home = () => {
         window.location.reload();
         toast.success('Logout successful!');
         navigate('/login');
-
     };
 
     return (

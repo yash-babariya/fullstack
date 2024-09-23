@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import User from '../models/User.js';
 
-// Validation schemas (unchanged)
+// Validation schemas
 const signupSchema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
     email: Joi.string().email().required(),
@@ -39,14 +39,12 @@ export const signup = async (req, res) => {
         user = new User({
             username,
             email,
-            password: hashedPassword,
-            lastTokenIat: Date.now() // Set initial lastTokenIat
+            password: hashedPassword
         });
 
         await user.save();
 
-        const token = generateToken(user);
-        res.json({ token });
+        res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -61,22 +59,23 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: error.message });
         }
 
-
         let user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ message: 'User not found' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ message: 'Invalid password' });
         }
 
-        // Update lastTokenIat before generating new token
-        user.lastTokenIat = Date.now();
+        // Generate new token
+        const token = generateToken(user);
+
+        // Update user's token in the database
+        user.token = token;
         await user.save();
 
-        const token = generateToken(user);
         res.json({ token });
     } catch (error) {
         console.error("Login error:", error);
@@ -99,7 +98,7 @@ export const verifyToken = async (token) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.user.id);
 
-        if (!user || decoded.iat < user.lastTokenIat) {
+        if (!user || user.token !== token) {
             return null;
         }
 
@@ -127,11 +126,11 @@ export const refreshToken = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Update lastTokenIat before generating new token
-        user.lastTokenIat = Date.now();
+        // Generate new token
+        const newToken = generateToken(user);
+        user.token = newToken;
         await user.save();
 
-        const newToken = generateToken(user);
         res.json({ token: newToken });
     } catch (error) {
         console.error("Token refresh error:", error);
