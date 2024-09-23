@@ -2,7 +2,7 @@ import express from 'express';
 
 const router = express.Router();
 
-router.get('/hello', (req, res) => {
+router.get('/v1', (req, res) => {
     res.json({ message: 'Hello from the backend!' });
 });
 
