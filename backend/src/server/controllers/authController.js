@@ -21,14 +21,12 @@ const loginSchema = Joi.object({
 
 export const signup = async (req, res) => {
     try {
+        const { username, email, password } = req.body;
         // Validate input
         const { error } = signupSchema.validate(req.body);
         if (error) {
-            console.log(error);
             return res.status(400).json({ message: error.message });
         }
-
-        const { username, email, password } = req.body;
 
         let user = await User.findOne({ email });
         if (user) {
@@ -50,20 +48,19 @@ export const signup = async (req, res) => {
         const token = generateToken(user);
         res.json({ token });
     } catch (error) {
-        console.error("Signup error:", error);
-        res.status(500).json({ message: 'Server error during signup' });
+        res.status(500).json({ error: error.message });
     }
 };
 
 export const login = async (req, res) => {
     try {
+        const { email, password } = req.body;
         // Validate input
         const { error } = loginSchema.validate(req.body);
         if (error) {
             return res.status(400).json({ message: error.message });
         }
 
-        const { email, password } = req.body;
 
         let user = await User.findOne({ email });
         if (!user) {

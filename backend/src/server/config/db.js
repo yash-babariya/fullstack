@@ -1,13 +1,11 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
-dotenv.config();
+const MONGO_URI = process.env.MONGO_URI || 'mongodb+srv://yashbabariya:Yash%405353@yash.fevlh.mongodb.net/?retryWrites=true&w=majority&appName=yash/test';
 
-const MONGODB_URI = process.env.MONGODB_URI
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(MONGODB_URI);
+        await mongoose.connect(MONGO_URI);
         console.log('MongoDB connected');
     } catch (error) {
         console.error(error.message);
