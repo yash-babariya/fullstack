@@ -19,6 +19,8 @@ const loginSchema = Joi.object({
     password: Joi.string().required()
 });
 
+const JWT_SECRET = process.env.JWT_SECRET || "535325BYC";
+
 export const signup = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -88,13 +90,13 @@ function generateToken(user) {
         user: { id: user.id },
         iat: Date.now()
     };
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 }
 
 // Function to verify tokens
 export const verifyToken = async (token) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET);
         const user = await User.findById(decoded.user.id);
 
         if (!user || user.token !== token) {
